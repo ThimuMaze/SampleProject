@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VisaOrch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href='http://fonts.googleapis.com/css?family=Belgrano' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" rel="stylesheet" type='text/css'>
+<link href="css/style.css" rel="stylesheet">
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<script type="text/javascript">
+		function authenticateLogin()
+		{
+			event.preventDefault();
+			var userName = $("input#userName").val();
+			var password = $("input#pwd").val();
+			if(userName == ""){	
+				userName = $("input#userNameTam").val();
+            }
+			if(password == ""){
+                password = $("input#userNameTam").val();
+            }
+			if(($("input#userName").val() == "") && (userName =="")){	
+				alert("Username is required");
+				return;
+			}
+			if(($("input#userNameTam").val() == "") && (userName =="")){	
+				alert("Username is required");
+				return;
+			}
+			if(($("input#pwd").val() == "") && (password =="")){	
+				alert("Password is required");
+                return;
+			}
+			if(($("input#pwdTam").val() == "") && (password =="")){	
+				alert("Password is required");
+                return;
+			}
+			var jsonData = userName + "," +  password;
+			var errorMsg = "FAILED";
+			var spdata = "";
+			$.ajax({
+                url: 'http://localhost:8080/VisaOrchService/AuthorizeService', 
+				method: 'get',
+				type: 'GET',
+                data: {q:jsonData}, //Data sent to server
+				contentType: 'application/json; charset=utf-8',
+                dataType: 'json', //Expected data format from server
+				xhrFields: {withCredentials: false},
+                success: function (msgdata) {//On Successful service call
+                    //alert(data);
+					//var dataAns = jQuery.parseJSON(msgdata);
+					for (var key in msgdata) {
+						//alert(msgdata[key].name);
+						spdata = msgdata[key].name;
+						//window.location.href = "survey.html";
+						$('.modal').css("display:block");
+					}
+					if(spdata == "")
+						$("#popUpMSg").append('<p class="serverMsg">Invalid Credentials.</p>');
+					else
+						$("#popUpMSg").append('<p class="serverMsg">Welcome '+spdata+'</p>');
+					$('#myModal').css("display:block");
+					$('#myModal').show();
+					$('textarea, input[type=text]' ).val('');
+					$('textarea, input[type=password]' ).val('');
+                },
+                error: function () {//On Error service call
+                    alert(errorMsg);
+				}
+            });
+			
+			$.ajaxSetup({'cache':true});
+		}
+	</script>
+	<header class="so-header js-so-header _fixed" id="EngHeader">
+		<div class="container">
+			<nav class="navbar navbar-default" role="navigation"> 
+			  <!-- Brand and toggle get grouped for better mobile display --> 
+			  <!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="navbar-header">
+					<h1 class="navbar-brand">
+						<!--<img class="brand-logo" data-src="images/logo/logo.png" alt="Logo" src="images/logo/logo.png">-->
+						<a href="#">VisaOrch</a>
+					</h1>
+					<h1 class="navbar-brand" style="float:right">
+						<a href="#" style="float:right">
+							<span class="glyphicon glyphicon-log-out"></span>
+						</a>
+					</h1>
+					<!--<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> 
+						<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> 
+						<span class="icon-bar"></span> <span class="icon-bar"></span> 
+					</button>
+				</div>
+				<div class="navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li><a href="HomePage-EN.html">Home</a></li>
+						<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">List</a>
+							<ul class="dropdown-menu">
+								<li><a class="langTamil" href="" onClick="doOne()">ListOne</a></li>
+								<li><a class="langEng" href="" onClick="doTwo()">ListTwo</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>-->
+				<!-- /.navbar-collapse --> 
+			</nav>
+		</div>
+	</header>
+	<section id="signInSection" class="main__middle__container">
+		<div class="logOnsep text-center" id="logOnEng"> 
+			<span>Sign In</span>
+		</div>
+		<div class="loginmodal-container">
+			<div id="EngForm">
+				<form autocomplete="off">
+					<input type="text" name="user" id="userName" placeholder="User Name" autocomplete="off">
+					<input type="password" name="pass" id="pwd" placeholder="Password">
+					<input type="submit" name="login" class="btn btn-default btn-lg-logIn" value="Login" onclick="authenticateLogin()" id="subEng">
+				</form>
+				<!--<div class="forgot-pwd">	
+					<a href="#">Forgot Password</a>
+				</div>
+				<div class="login-help">
+					<br/><h4 style="font-size:12px;"> New to Varappu? -   
+						<a id="goToSignUpEng" href="#">Sign Up</a></h4>
+				</div>-->
+			</div>
+		</div>				
+	</section>
+	<!-- Modal -->
+		<!-- The Modal -->
+		<div id="myModal" class="modal" style="display:none">
+
+		  <!-- Modal content -->
+		  <div class="modal-content" id="popUpMSg">
+			<span class="close" id=closeID>&times;</span>
+		  </div>
+
+		</div>
+	<!-- Modal -->
+	
+	<footer>
+		<div class="footer1"> 
+			<img class="logo-04 logo" id="syntelFooter" alt="" src="images\icons\SYNT_logo.png">
+		</div>
+	</footer>
+		
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+	<script type="text/javascript" src="js/jquery.min.js"></script> 
+	<!-- Include all compiled plugins (below), or include individual files as needed --> 
+	<script src="js/bootstrap.min.js"></script> 
+</body>
+</html>
